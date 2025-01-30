@@ -10,20 +10,18 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions checkout@v4
-
-      - name: Authenticate to Google Cloud from GitHub Actions
-        uses: google-github-actions/auth@v2
+        uses: actions/checkout@v3
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
         with:
           credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
-
-      - name: Deploy to Cloud Run
+      - name: Deploy container to Cloud Run
         run: |
-          gcloud run deploy latam-challenge \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/latam-challenge:${{ github.sha }} \
-            --region us-central1 \
-            --platform managed \
-            --allow-unauthenticated
+          gcloud run deploy latam-challenge-run \
+            --image=${{ secrets.CONTAINER_IMAGE_URL }}:latest \
+            --allow-unauthenticated \
+            --region=us-central1 \
+            --project=${{ secrets.GCLOUD_PROJECT_ID }}

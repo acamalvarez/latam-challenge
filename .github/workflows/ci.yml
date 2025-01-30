@@ -1,37 +1,48 @@
 name: "Continuous Integration"
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - "main"
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
       - name: Checkout code
-
-      - uses: actions/setup-python@v4
-      - name: Set up Python
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-
-      - name: Install dependencies
+      - name: Install requirements
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt -r requirements-tes.txt
-
+          python -m pip install -r requirements.txt -r requirements-dev.txt -r requirements-test.txt
       - name: Run tests
         env:
           MODE: "github actions"
         run: |
           make model-test
           make api-test
-      
-      - uses: actions/checkout@v4
-        run: docker build . --file Dockerfile --tag acalmo/latam-challenge:latest
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+      - name: Build container image
+        run: |
+          docker build -f Dockerfile -t latam-challenge .
+          docker tag latam-challenge ${{ secrets.CONTAINER_IMAGE_URL }}:latest
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker push ${{ secrets.CONTAINER_IMAGE_URL }} --all-tags
