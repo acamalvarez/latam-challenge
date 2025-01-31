@@ -1,3 +1,5 @@
+"""Model to predict flights delay."""
+
 from datetime import datetime
 from typing import List, Tuple, Union
 
@@ -5,6 +7,8 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+
+from challenge.variables import TOP_10_FEATURES
 
 
 def get_period_day(date: str) -> str:
@@ -65,6 +69,7 @@ def get_min_diff(data: pd.DataFrame) -> float:
 
 
 class DelayModel:
+    """Model to predict flights delay."""
 
     def __init__(self):
         self._model = None  # Model should be saved in this attribute.
@@ -100,25 +105,12 @@ class DelayModel:
             axis=1,
         )
 
-        top_10_features = [
-            "OPERA_Latin American Wings",
-            "MES_7",
-            "MES_10",
-            "OPERA_Grupo LATAM",
-            "MES_12",
-            "TIPOVUELO_I",
-            "MES_4",
-            "MES_11",
-            "OPERA_Sky Airline",
-            "OPERA_Copa Air",
-        ]
-
         if target_column:
             target = data[["delay"]].copy()
 
-            return features[top_10_features], target
+            return features[TOP_10_FEATURES], target
 
-        return features[top_10_features]
+        return features[TOP_10_FEATURES]
 
     def fit(self, features: pd.DataFrame, target: pd.DataFrame) -> None:
         """

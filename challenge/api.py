@@ -8,20 +8,24 @@ import pandas as pd
 from pydantic import BaseModel
 
 from challenge.model import DelayModel
+from challenge.variables import TOP_10_FEATURES
 
 
 class TipoVuelo(Enum):
+    """Enumeration for TipoVuelo."""
     I = "I"
     N = "N"
 
 
 class Flight(BaseModel):
+    """Base model to represent a flight."""
     OPERA: str
     TIPOVUELO: str
     MES: int
 
 
 class FlightData(BaseModel):
+    """Base model to represent a list of Flights"""
     flights: List[Flight]
 
 
@@ -44,30 +48,17 @@ async def post_predict(flight_data: FlightData) -> dict:
     model.fit(features, target)
 
     arilines = data["OPERA"].unique()
-    top_10_features = [
-        "OPERA_Latin American Wings",
-        "MES_7",
-        "MES_10",
-        "OPERA_Grupo LATAM",
-        "MES_12",
-        "TIPOVUELO_I",
-        "MES_4",
-        "MES_11",
-        "OPERA_Sky Airline",
-        "OPERA_Copa Air",
-    ]
 
     try:
         data = pd.DataFrame(
-            0, index=np.arange(len(flight_data.flights)), columns=top_10_features
+            0, index=np.arange(len(flight_data.flights)), columns=TOP_10_FEATURES
         )
         for index, flight in enumerate(flight_data.flights):
             if flight.OPERA not in arilines:
                 raise ValueError("A aerolínea no existe en los datos.")
 
-            else:
-                if flight.OPERA in top_10_features:
-                    data.loc[index]["OPERA" + flight.OPERA] = 1
+            if flight.OPERA in TOP_10_FEATURES:
+                data.loc[index]["OPERA" + flight.OPERA] = 1
 
             if flight.TIPOVUELO not in TipoVuelo.__members__:
                 values = list((member.value for member in TipoVuelo))
@@ -78,7 +69,7 @@ async def post_predict(flight_data: FlightData) -> dict:
                 raise ValueError("El mes debe ser entre 1 y 12.")
             month = "MES_" + str(flight.MES)
 
-            if month in top_10_features:
+            if month in TOP_10_FEATURES:
                 data.loc[index][month] = 1
 
         prediction = model.predict(data)
