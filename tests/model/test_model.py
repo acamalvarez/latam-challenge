@@ -17,7 +17,10 @@ class TestModel(unittest.TestCase):
         self.data = pd.read_csv(filepath_or_buffer="data/data.csv")
 
     def test_model_preprocess_for_training(self):
-        features, target = self.model.preprocess(data=self.data, target_column="delay")
+        features, target = self.model.preprocess(
+            data=self.data,
+            target_column="delay",
+        )
 
         assert isinstance(features, pd.DataFrame)
         assert features.shape[1] == len(self.FEATURES_COLS)
@@ -35,7 +38,10 @@ class TestModel(unittest.TestCase):
         assert set(features.columns) == set(self.FEATURES_COLS)
 
     def test_model_fit(self):
-        features, target = self.model.preprocess(data=self.data, target_column="delay")
+        features, target = self.model.preprocess(
+            data=self.data,
+            target_column="delay",
+        )
 
         _, features_validation, _, target_validation = train_test_split(
             features,
@@ -58,7 +64,10 @@ class TestModel(unittest.TestCase):
         assert report["1"]["f1-score"] > 0.30
 
     def test_model_predict(self):
-        features, target = self.model.preprocess(data=self.data, target_column="delay")
+        features, target = self.model.preprocess(
+            data=self.data,
+            target_column="delay",
+        )
 
         self.model.fit(features=features, target=target)
 

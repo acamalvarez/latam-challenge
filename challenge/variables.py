@@ -1,3 +1,4 @@
+"""List of variables used in different parts on the application."""
 FEATURES_COLS = [
     "OPERA_Latin American Wings",
     "MES_7",

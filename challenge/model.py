@@ -12,6 +12,7 @@ from challenge.variables import TOP_10_FEATURES
 
 
 def get_period_day(date: str) -> str:
+    """Returns perdiod date based on a date string."""
     date_time = datetime.strptime(date, "%Y-%m-%d %H:%M:%S").time()
     morning_min = datetime.strptime("05:00", "%H:%M").time()
     morning_max = datetime.strptime("11:59", "%H:%M").time()
@@ -36,6 +37,7 @@ def get_period_day(date: str) -> str:
 
 
 def is_high_season(date: str) -> int:
+    """Determines if the associated date is a high season date."""
     fecha_año = int(date.split("-")[0])
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
     range1_min = datetime.strptime("15-Dec", "%d-%b").replace(year=fecha_año)
@@ -62,6 +64,7 @@ def is_high_season(date: str) -> int:
 
 
 def get_min_diff(data: pd.DataFrame) -> float:
+    """Returns the difference in dates `Fecha-0` and `Fecha-I`"""
     fecha_o = datetime.strptime(data["Fecha-O"], "%Y-%m-%d %H:%M:%S")
     fecha_i = datetime.strptime(data["Fecha-I"], "%Y-%m-%d %H:%M:%S")
     min_diff = ((fecha_o - fecha_i).total_seconds()) / 60
@@ -121,7 +124,7 @@ class DelayModel:
             target (pd.DataFrame): target.
         """
 
-        x_train, x_test, y_train, y_test = train_test_split(
+        x_train, _, y_train, _ = train_test_split(
             features,
             target["delay"],
             test_size=0.33,

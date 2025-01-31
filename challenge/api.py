@@ -1,3 +1,5 @@
+"""FastApi to make predictions."""
+
 import os
 from enum import Enum
 from typing import List
@@ -34,11 +36,14 @@ app = fastapi.FastAPI()
 
 @app.get("/health", status_code=200)
 async def get_health() -> dict:
+    """Check health status of API."""
     return {"status": "OK"}
 
 
 @app.post("/predict", status_code=200)
 async def post_predict(flight_data: FlightData) -> dict:
+    """Predicts flight delay probability based on post request."""
+
     absolute_path = os.path.dirname(__file__)
     relative_path = "../data/data.csv"
     full_path = os.path.join(absolute_path, relative_path)
