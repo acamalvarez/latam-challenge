@@ -21,7 +21,7 @@ def get_period_day(date: str) -> str:
 
     if morning_min <= date_time <= morning_max:
         return "mañana"
-    elif afternoon_min <= date_time <= afternoon_max:
+    if afternoon_min <= date_time <= afternoon_max:
         return "tarde"
     return "noche"
 
