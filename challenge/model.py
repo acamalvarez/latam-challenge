@@ -1,3 +1,5 @@
+"""Model to predict flights delay."""
+
 from datetime import datetime
 from typing import List, Tuple, Union
 
@@ -6,58 +8,49 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
+from challenge.variables import TOP_10_FEATURES
+
 
 def get_period_day(date: str) -> str:
+    """Returns perdiod date based on a date string."""
     date_time = datetime.strptime(date, "%Y-%m-%d %H:%M:%S").time()
     morning_min = datetime.strptime("05:00", "%H:%M").time()
     morning_max = datetime.strptime("11:59", "%H:%M").time()
     afternoon_min = datetime.strptime("12:00", "%H:%M").time()
     afternoon_max = datetime.strptime("18:59", "%H:%M").time()
-    evening_min = datetime.strptime("19:00", "%H:%M").time()
-    evening_max = datetime.strptime("23:59", "%H:%M").time()
-    night_min = datetime.strptime("00:00", "%H:%M").time()
-    night_max = datetime.strptime("4:59", "%H:%M").time()
 
-    if date_time >= morning_min and date_time <= morning_max:
+    if morning_min <= date_time <= morning_max:
         return "mañana"
-    elif date_time >= afternoon_min and date_time <= afternoon_max:
+    if afternoon_min <= date_time <= afternoon_max:
         return "tarde"
-    elif (
-        date_time >= evening_min
-        and date_time <= evening_max
-        or date_time >= night_min
-        and date_time <= night_max
-    ):
-        return "noche"
+    return "noche"
 
 
 def is_high_season(date: str) -> int:
-    fecha_año = int(date.split("-")[0])
+    """Determines if the associated date is a high season date."""
+    fecha_anho = int(date.split("-")[0])
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-    range1_min = datetime.strptime("15-Dec", "%d-%b").replace(year=fecha_año)
-    range1_max = datetime.strptime("31-Dec", "%d-%b").replace(year=fecha_año)
-    range2_min = datetime.strptime("1-Jan", "%d-%b").replace(year=fecha_año)
-    range2_max = datetime.strptime("3-Mar", "%d-%b").replace(year=fecha_año)
-    range3_min = datetime.strptime("15-Jul", "%d-%b").replace(year=fecha_año)
-    range3_max = datetime.strptime("31-Jul", "%d-%b").replace(year=fecha_año)
-    range4_min = datetime.strptime("11-Sep", "%d-%b").replace(year=fecha_año)
-    range4_max = datetime.strptime("30-Sep", "%d-%b").replace(year=fecha_año)
+    range1_min = datetime.strptime("15-Dec", "%d-%b").replace(year=fecha_anho)
+    range1_max = datetime.strptime("31-Dec", "%d-%b").replace(year=fecha_anho)
+    range2_min = datetime.strptime("1-Jan", "%d-%b").replace(year=fecha_anho)
+    range2_max = datetime.strptime("3-Mar", "%d-%b").replace(year=fecha_anho)
+    range3_min = datetime.strptime("15-Jul", "%d-%b").replace(year=fecha_anho)
+    range3_max = datetime.strptime("31-Jul", "%d-%b").replace(year=fecha_anho)
+    range4_min = datetime.strptime("11-Sep", "%d-%b").replace(year=fecha_anho)
+    range4_max = datetime.strptime("30-Sep", "%d-%b").replace(year=fecha_anho)
 
     if (
-        date >= range1_min
-        and date <= range1_max
-        or date >= range2_min
-        and date <= range2_max
-        or date >= range3_min
-        and date <= range3_max
-        or date >= range4_min
-        and date <= range4_max
+        range1_min <= date <= range1_max
+        or range2_min <= date <= range2_max
+        or range3_min <= date <= range3_max
+        or range4_min <= date <= range4_max
     ):
         return 1
     return 0
 
 
 def get_min_diff(data: pd.DataFrame) -> float:
+    """Returns the difference in dates `Fecha-0` and `Fecha-I`"""
     fecha_o = datetime.strptime(data["Fecha-O"], "%Y-%m-%d %H:%M:%S")
     fecha_i = datetime.strptime(data["Fecha-I"], "%Y-%m-%d %H:%M:%S")
     min_diff = ((fecha_o - fecha_i).total_seconds()) / 60
@@ -65,6 +58,7 @@ def get_min_diff(data: pd.DataFrame) -> float:
 
 
 class DelayModel:
+    """Model to predict flights delay."""
 
     def __init__(self):
         self._model = None  # Model should be saved in this attribute.
@@ -100,25 +94,12 @@ class DelayModel:
             axis=1,
         )
 
-        top_10_features = [
-            "OPERA_Latin American Wings",
-            "MES_7",
-            "MES_10",
-            "OPERA_Grupo LATAM",
-            "MES_12",
-            "TIPOVUELO_I",
-            "MES_4",
-            "MES_11",
-            "OPERA_Sky Airline",
-            "OPERA_Copa Air",
-        ]
-
         if target_column:
             target = data[["delay"]].copy()
 
-            return features[top_10_features], target
+            return features[TOP_10_FEATURES], target
 
-        return features[top_10_features]
+        return features[TOP_10_FEATURES]
 
     def fit(self, features: pd.DataFrame, target: pd.DataFrame) -> None:
         """
@@ -129,7 +110,7 @@ class DelayModel:
             target (pd.DataFrame): target.
         """
 
-        x_train, x_test, y_train, y_test = train_test_split(
+        x_train, _, y_train, _ = train_test_split(
             features,
             target["delay"],
             test_size=0.33,

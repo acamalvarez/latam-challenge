@@ -20,8 +20,9 @@ class TestBatchPipeline(unittest.TestCase):
                 }
             ]
         }
-        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0])) # change this line to the model of chosing
-        async with AsyncClient(app=app, base_url="http://0.0.0.0") as ac:
+        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))
+        # change this line to the model of chosing
+        async with AsyncClient(app=app, base_url="http://0.0.0.0"):
             response = await self.client.post("/predict", json=data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"predict": [0]})
@@ -36,8 +37,9 @@ class TestBatchPipeline(unittest.TestCase):
                 }
             ]
         }
-        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))# change this line to the model of chosing
-        async with AsyncClient(app=app, base_url="http://0.0.0.0") as ac:
+        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))
+        # change this line to the model of chosing
+        async with AsyncClient(app=app, base_url="http://0.0.0.0"):
             response = await self.client.post("/predict", json=data)
         self.assertEqual(response.status_code, 400)
 
@@ -51,8 +53,9 @@ class TestBatchPipeline(unittest.TestCase):
                 }
             ]
         }
-        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))# change this line to the model of chosing
-        async with AsyncClient(app=app, base_url="http://0.0.0.0") as ac:
+        # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))
+        # change this line to the model of chosing
+        async with AsyncClient(app=app, base_url="http://0.0.0.0"):
             response = await self.client.post("/predict", json=data)
         self.assertEqual(response.status_code, 400)
 
@@ -67,6 +70,6 @@ class TestBatchPipeline(unittest.TestCase):
             ]
         }
         # when("xgboost.XGBClassifier").predict(ANY).thenReturn(np.array([0]))
-        async with AsyncClient(app=app, base_url="http://0.0.0.0") as ac:
+        async with AsyncClient(app=app, base_url="http://0.0.0.0"):
             response = await self.client.post("/predict", json=data)
         self.assertEqual(response.status_code, 400)
