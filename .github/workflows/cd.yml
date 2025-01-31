@@ -3,7 +3,7 @@ name: 'Deploy to Cloud Run from Source'
 on:
   push:
     branches:
-      - 'main'
+      - 'AA-configure-ci/cd'
 
 env:
   PROJECT_ID: 'latam-challenge-449402'
