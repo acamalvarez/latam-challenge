@@ -35,7 +35,7 @@ on:
       - 'AA-configure-ci/cd'
 
 env:
-  PROJECT_ID: 'latam-challenge' # TODO: update to your Google Cloud project ID
+  PROJECT_ID: 'latam-challenge-449402' # TODO: update to your Google Cloud project ID
   REGION: 'us-central1' # TODO: update to your region
   SERVICE: 'latam-challenge-final' # TODO: update to your service name
   GAR_NAME: 'latam-challenge'
