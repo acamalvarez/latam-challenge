@@ -1,27 +1,46 @@
-name: "Continuous Delivery"
+name: 'Deploy to Cloud Run from Source'
 
 on:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types:
-      - completed
+  push:
+    branches:
+      - 'main'
+
+env:
+  PROJECT_ID: 'latam-challenge-449402'
+  REGION: 'us-central1'
+  SERVICE: 'latam-challenge-final'
 
 jobs:
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
+      - name: 'Checkout'
+        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+
+      # Configure Workload Identity Federation and generate an access token.
+      #
+      # See https://github.com/google-github-actions/auth for more options,
+      # including authenticating via a JSON credentials file.
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
         with:
-          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
-      - name: Deploy container to Cloud Run
-        run: |
-          gcloud run deploy latam-challenge-run \
-            --image=${{ secrets.CONTAINER_IMAGE_URL }}:latest \
-            --allow-unauthenticated \
-            --region=us-central1 \
-            --project=${{ secrets.GCLOUD_PROJECT_ID }}
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: 'Deploy to Cloud Run'
+        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        with:
+          service: '${{ env.SERVICE }}'
+          region: '${{ env.REGION }}'
+          # NOTE: If using a different source folder, update the image name below:
+          source: './'
+
+      # If required, use the Cloud Run URL output in later steps
+      - name: 'Show output'
+        run: |-
+          echo ${{ steps.deploy.outputs.url }}
