@@ -28,3 +28,9 @@ To run the project locally you can:
 
 ## Second option
 - Use docker `docker
+
+
+# CI/CD
+CI/CD is implemented using GitHub actions.
+- CI set up Python, installs dependencies, analyze the code with pylint, and run tests
+- CD builds and push image to Artifact Registry. And deploy using Cloud Run.
