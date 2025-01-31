@@ -18,36 +18,26 @@ def get_period_day(date: str) -> str:
     morning_max = datetime.strptime("11:59", "%H:%M").time()
     afternoon_min = datetime.strptime("12:00", "%H:%M").time()
     afternoon_max = datetime.strptime("18:59", "%H:%M").time()
-    evening_min = datetime.strptime("19:00", "%H:%M").time()
-    evening_max = datetime.strptime("23:59", "%H:%M").time()
-    night_min = datetime.strptime("00:00", "%H:%M").time()
-    night_max = datetime.strptime("4:59", "%H:%M").time()
 
-    if date_time >= morning_min and date_time <= morning_max:
+    if morning_min <= date_time <= morning_max:
         return "mañana"
-    elif date_time >= afternoon_min and date_time <= afternoon_max:
+    elif afternoon_min <= date_time <= afternoon_max:
         return "tarde"
-    elif (
-        date_time >= evening_min
-        and date_time <= evening_max
-        or date_time >= night_min
-        and date_time <= night_max
-    ):
-        return "noche"
+    return "noche"
 
 
 def is_high_season(date: str) -> int:
     """Determines if the associated date is a high season date."""
-    fecha_año = int(date.split("-")[0])
+    fecha_anho = int(date.split("-")[0])
     date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-    range1_min = datetime.strptime("15-Dec", "%d-%b").replace(year=fecha_año)
-    range1_max = datetime.strptime("31-Dec", "%d-%b").replace(year=fecha_año)
-    range2_min = datetime.strptime("1-Jan", "%d-%b").replace(year=fecha_año)
-    range2_max = datetime.strptime("3-Mar", "%d-%b").replace(year=fecha_año)
-    range3_min = datetime.strptime("15-Jul", "%d-%b").replace(year=fecha_año)
-    range3_max = datetime.strptime("31-Jul", "%d-%b").replace(year=fecha_año)
-    range4_min = datetime.strptime("11-Sep", "%d-%b").replace(year=fecha_año)
-    range4_max = datetime.strptime("30-Sep", "%d-%b").replace(year=fecha_año)
+    range1_min = datetime.strptime("15-Dec", "%d-%b").replace(year=fecha_anho)
+    range1_max = datetime.strptime("31-Dec", "%d-%b").replace(year=fecha_anho)
+    range2_min = datetime.strptime("1-Jan", "%d-%b").replace(year=fecha_anho)
+    range2_max = datetime.strptime("3-Mar", "%d-%b").replace(year=fecha_anho)
+    range3_min = datetime.strptime("15-Jul", "%d-%b").replace(year=fecha_anho)
+    range3_max = datetime.strptime("31-Jul", "%d-%b").replace(year=fecha_anho)
+    range4_min = datetime.strptime("11-Sep", "%d-%b").replace(year=fecha_anho)
+    range4_max = datetime.strptime("30-Sep", "%d-%b").replace(year=fecha_anho)
 
     if (
         date >= range1_min
