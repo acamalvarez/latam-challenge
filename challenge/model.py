@@ -40,14 +40,10 @@ def is_high_season(date: str) -> int:
     range4_max = datetime.strptime("30-Sep", "%d-%b").replace(year=fecha_anho)
 
     if (
-        date >= range1_min
-        and date <= range1_max
-        or date >= range2_min
-        and date <= range2_max
-        or date >= range3_min
-        and date <= range3_max
-        or date >= range4_min
-        and date <= range4_max
+        range1_min <= date <= range1_max
+        or range2_min <= date <= range2_max
+        or range3_min <= date <= range3_max
+        or range4_min <= date <= range4_max
     ):
         return 1
     return 0

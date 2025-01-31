@@ -8,7 +8,8 @@ from challenge.variables import FEATURES_COLS
 
 
 class TestModel(unittest.TestCase):
-
+    """Test model."""
+    FEATURES_COLS = FEATURES_COLS
     TARGET_COL = ["delay"]
 
     def setUp(self) -> None:
