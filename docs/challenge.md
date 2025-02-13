@@ -14,7 +14,7 @@ Updated dependencies to latest versions to avoid installation problems in docker
 
 # API
 
-The API is hosted in https://latam-challenge-616721223966.us-central1.run.app. To check for the status go to `/health` and for the documentation go to `/docs`.
+The API is hosted in https://latam-challenge-final-616721223966.us-central1.run.app. To check for the status go to `/health` and for the documentation go to `/docs`.
 
 The API uses the model logistic regression with feature importance and balance. It showed a recall of 0.52 and a precision of 0.88 for class 0 and recall of 0.25 and 0.69 for class 1, which compared to the metrics of other models, shows a better balance in terms of handling both classes. It has similar metrics than the model XGBoost with Feature Importance and Balance, however, the logistic regression one was chosen because usually if more efficient as it requires less computational resources and it is generally easy to interpret.
 
